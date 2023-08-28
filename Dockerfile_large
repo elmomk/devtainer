@@ -9,8 +9,8 @@ RUN rustup default stable
 RUN git clone https://github.com/Morganamilo/paru.git /tmp/paru && cd /tmp/paru && cargo build --release && \
     sudo cp /tmp/paru/target/release/paru /usr/bin/paru
 RUN paru -S fnm azure-cli-bin
-FROM archlinux:latest as MainImage
-COPY --from=builder  /usr/bin/{az,fnm} /tmp/paru/target/release/paru /usr/bin/
+FROM archlinux:latest as Main
+COPY --from=builder  /usr/bin/az /usr/bin/fnm /tmp/paru/target/release/paru /usr/bin/
 COPY --from=builder /opt/az /opt/az/
 RUN pacman -Syyu --noconfirm rustup kubectl terraform helm aws-cli-v2 ansible stow starship neovim fzf bat exa git-delta mcfly lazygit git fd ripgrep direnv thefuck zoxide tmux zsh sudo gcc go unzip shellcheck flake8 cmake make && rm -rf /var/cache/pacman/pkg/*
 RUN rustup default stable

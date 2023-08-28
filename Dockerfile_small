@@ -8,14 +8,10 @@ USER build
 RUN rustup default stable
 RUN git clone https://github.com/Morganamilo/paru.git /tmp/paru && cd /tmp/paru && cargo build --release && \
     sudo cp /tmp/paru/target/release/paru /usr/bin/paru
-RUN paru -S fnm #terraform-ls
-FROM archlinux:latest
-# COPY --from=builder  /usr/bin/{terraform-ls,fnm} /usr/bin/
-# COPY --from=builder  /usr/bin/fnm /tmp/paru/target/release/paru /usr/bin/
+RUN paru -S fnm
+FROM archlinux:latest as Main
 COPY --from=builder  /usr/bin/fnm /usr/bin/
 RUN pacman -Syyu --noconfirm stow starship neovim fzf bat exa git-delta mcfly lazygit git fd ripgrep direnv thefuck zoxide tmux zsh sudo gcc go unzip shellcheck flake8 cmake make && rm -rf /var/cache/pacman/pkg/*
-# rustup kubectl terraform helm aws-cli-v2 ansible 
-# RUN rustup default stable
 WORKDIR /root/
 RUN git clone https://github.com/elmomk/dotfiles
 RUN cd dotfiles && stow -t ~ zsh-personal tmux mo-vim starship
